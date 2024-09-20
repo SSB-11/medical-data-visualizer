@@ -20,7 +20,7 @@ df['cholesterol'] = np.where(df['cholesterol'] == 1, 0, 1)
 # 4
 def draw_cat_plot():
     # 5
-    df_cat = None
+    df_cat = pd.melt(df, id_vars='cardio', value_vars=['cholesterol', 'gluc', 'smoke', 'alco', 'active', 'overweight'])
 
 
     # 6
