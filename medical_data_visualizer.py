@@ -9,7 +9,7 @@ df = pd.read_csv("medical_examination.csv")
 # 2
 def calculate_bmi(cm_height, kg_weight):
     bmi = kg_weight/pow(cm_height/100, 2) # Height in centimeters to meters
-    return round(bmi, 1)
+    return bmi
 
 df['overweight'] = np.where(calculate_bmi(df['height'], df['weight']) > 25, 1, 0)
 
@@ -28,7 +28,7 @@ def draw_cat_plot():
     
     # 7
     df_cat = df_cat.reset_index()
-    chart = sns.catplot(data=df_cat, x='variable', y='total', col='cardio', hue='value', kind='bar')
+    chart = sns.catplot(data=df_cat, x='variable', y='total', col='cardio', hue='value', kind='bar', order=sorted(df_cat['variable']))
 
 
     # 8
@@ -43,21 +43,26 @@ def draw_cat_plot():
 # 10
 def draw_heat_map():
     # 11
-    df_heat = None
+    df_heat = df[
+        (df['ap_lo'] <= df['ap_hi'])
+        & (df['height'] >= df['height'].quantile(0.025)) 
+        & (df['height'] <= df['height'].quantile(0.975))
+        & (df['weight'] >= df['weight'].quantile(0.025)) 
+        & (df['weight'] <= df['weight'].quantile(0.975))
+    ]
 
     # 12
-    corr = None
+    corr = df_heat.corr()
 
     # 13
-    mask = None
-
+    mask = np.triu(np.ones_like(corr, dtype=bool))
 
 
     # 14
-    fig, ax = None
+    fig, ax = plt.subplots()
 
     # 15
-
+    sns.heatmap(corr, ax=ax, annot=True, cmap='YlGnBu', fmt='.1f', mask=mask)
 
 
     # 16
